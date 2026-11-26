@@ -1,0 +1,4 @@
+Boards: 33554432
+Total dominating: 11343461
+Also horizontal: 2950
+Fully valid: 0

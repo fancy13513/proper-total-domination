@@ -1,0 +1,198 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=25mm]{geometry}
+\usepackage{url}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\pt}{\gamma_{\rm pt}}
+\newcommand{\T}{T}
+\pagestyle{plain}
+\setlength{\parskip}{3pt}
+\setlength{\parindent}{1em}
+\title{Proper total domination on toroidal grids:\\odd dimensions and exact optima at width five}
+\author{Research draft for independent verification}
+\date{26 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+A set of marked vertices is proper total dominating when every open neighbourhood contains a mark and adjacent vertices have different numbers of marked neighbours. We answer a question of Osborn and Zhang: among tori $C_h\square C_w$ with odd $h,w\ge5$, exactly $C_5\square C_5$ has no such set. We also determine the minimum size for $C_5\square C_n$ for every $n\ge3$. It equals $5\lceil n/2\rceil$ for $n\ge12$. The existence proof uses locally extensible binary boards. The optimization proof reduces to minimum-weight closed walks and certifies an identity for all entries of two finite distance matrices. The finite computations can be reproduced with the accompanying source code.
+\end{abstract}
+
+\section{The problem and the results}
+Put $\T_{h,w}=C_h\square C_w$ for $h,w\ge3$. Its vertices are pairs in $\mathbb Z_h\times\mathbb Z_w$; the four neighbours differ by $\pm1$ in one coordinate. For $S\subseteq V$, let $s(v)=|N(v)\cap S|$. Write $\pt(G)$ for the least $|S|$ subject to $s(v)>0$ for all $v$ and $s(u)\ne s(v)$ on each edge $uv$. We assign $+\infty$ when no such set exists. Chatterjee et al. studied this invariant for paths, cycles and grids \cite{intro}. Osborn and Zhang settled existence on tori with an even side and on odd tori with a side of length three. At the end of Section 3 and again in Section 4 of \cite{princes} they ask for the remaining odd tori. Their later paper \cite{fans} also describes this case as open.
+
+\begin{theorem}\label{exists}
+For odd $h,w\ge5$, $\pt(\T_{h,w})<\infty$ if and only if $(h,w)\ne(5,5)$.
+\end{theorem}
+
+\begin{theorem}\label{five}
+Let $f(n)=\pt(\T_{5,n})$. For $n\ge12$, $f(n)=5\lceil n/2\rceil$. The complete initial values are
+\[
+\begin{array}{c|rrrrrrrrr}
+ n&3&4&5&6&7&8&9&10&11\\ \hline
+ f(n)&\infty&12&\infty&15&20&21&26&25&31 .
+\end{array}
+\]
+\end{theorem}
+
+Thus the limiting marked fraction at width five is $1/2$. On an odd circumference $n\ge13$, the optimum exceeds half the number of vertices by $5/2$ marks. Together with \cite{princes}, Theorem~\ref{exists} gives the existence classification for all $h,w\ge3$: the forbidden tori are the odd tori having a side of length three and the $5$-by-$5$ torus.
+
+\clearpage
+\section{Constructing all positive odd sizes}
+A board is a zero-one matrix $B$. Its four-neighbour sums are
+\[
+ s_{i,j}=B_{i-1,j}+B_{i+1,j}+B_{i,j-1}+B_{i,j+1}.
+\]
+All indices are cyclic. We require $s_{i,j}>0$, $s_{i,j}\ne s_{i+1,j}$ and $s_{i,j}\ne s_{i,j+1}$ for every pair $(i,j)$.
+
+For $d\ge5$ and $k\ge0$, define the circular word
+\[
+ W_d(k)=(0,1)^{k+1}(2,3,\ldots,d-1).
+\]
+Use this as a list of row or column indices in a fixed board; both lists may be expanded independently. Every additional pair increases the associated side length by two.
+
+\begin{lemma}\label{local}
+If an initial board satisfies the three tests for $k=0,1,2$ on each extensible axis in every combination, it satisfies them for all nonnegative choices of $k$ on those axes.
+\end{lemma}
+\begin{proof}
+A horizontal comparison uses at most three consecutive rows and four consecutive columns; a vertical comparison uses four rows and three columns. A single-vertex test has smaller support. For $k\ge2$ every factor of length at most four of $W_d(k)$ occurs in $W_d(2)$. The alternating run has length at least six and always has the same first and last symbols. The other run has length at least three. A factor crossing both junctions would have to traverse an entire run and include a symbol on each side, which takes at least five symbols. Thus a factor lies within one run or sees just one fixed junction. Its contents occur already at $k=2$ in the same orientation. We can locate the needed factors independently on the row and column axes. The resulting small board contains the complete indexed neighbourhood of the test.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{exists}]
+By symmetry let $h\le w$. When $h=5$, Theorem~\ref{five}, proved independently in Section~3, gives the answer. When $h=7$, use the fixed boards of lengths $7$ and $9$ and the column-extensible board of length $11$ in Appendix~A. When $h\ge9$, use the doubly extensible $9$-by-$9$ board there. For these four boards the tests above pass on respectively $1,1,3,9$ instances. Appendix~A supplies the exact binary entries, and Lemma~\ref{local} gives all required sizes. Four extra width-five boards and a direct enumeration of the forbidden size independently check this classification.
+\end{proof}
+
+\begin{proposition}
+For odd $h,w\ge3$, any proper total dominating set $S$ on $\T_{h,w}$ satisfies
+$|S|\ge \lceil(3hw+3\max(h,w))/8\rceil$.
+\end{proposition}
+\begin{proof}
+A row of odd length $w$ contains at most $(w-1)/2$ entries with score one. It also contains an entry with score at least three, since scores one and two cannot properly color an odd cycle. Its score sum is therefore at least $2w-(w-1)/2+1=(3w+3)/2$. Summing rows and, separately, columns gives the stronger of two bounds. Every mark contributes four to the sum of all scores.
+\end{proof}
+
+\clearpage
+\section{The exact optimum at width five}
+A column is an element of $\{0,1\}^5$. For a triple of columns $(a,b,c)$ write
+\[
+ q_j(a,b,c)=a_j+c_j+b_{j-1}+b_{j+1} \qquad(j\in\mathbb Z_5).
+\]
+Keep the triple when all five entries are positive and $q_j\ne q_{j+1}$ for every $j$. Make a directed arc from $u=(a,b,c)$ to $v=(b,c,d)$ when both triples are kept and $q_j(u)\ne q_j(v)$ at all five positions. Give the arc weight $|b|$, the number of ones in $b$.
+
+\begin{lemma}
+For $n\ge3$, $f(n)$ is the minimum weight of a closed walk of exactly $n$ arcs.
+\end{lemma}
+\begin{proof}
+Read the $n$ columns of a valid torus cyclically. Consecutive triples overlap in two columns. The within-column tests enforce positivity and all edges parallel to $C_5$; the arc tests enforce the other edges, including the seam. The walk charges each middle column once. Conversely a based closed walk yields a cyclic word of $n$ middle columns. The overlaps force the left and right columns of every state to be the preceding and following middle columns. This argument also applies for $n=3$, where the two horizontal neighbours are distinct. Repeated states and repeated visits to the same vertex of the auxiliary graph are allowed.
+\end{proof}
+
+Let $D_t(u,v)$ be the minimum weight of a walk of length exactly $t$ from $u$ to $v$, with an empty minimum equal to infinity. The initial matrix has zero diagonal and infinite off-diagonal entries. Writing $w(u)$ for the weight of the middle column of state $u$, the recurrence is
+\[
+ D_{t+1}(a,v)=\min_{u\to v}\bigl(D_t(a,u)+w(u)\bigr).
+\]
+It follows that $f(t)=\min_u D_t(u,u)$ for $t\ge3$.
+
+\begin{lemma}[finite computation]\label{finite}
+The graph has $4{,}310$ states and $10{,}800$ arcs. Entrywise, with $\infty+5=\infty$,
+\[
+                 D_{50}=D_{48}+5.
+\]
+Of the $18{,}576{,}100$ compared ordered pairs, $5{,}985{,}800$ are finite in either matrix. The diagonal minima for $3\le t\le11$ are as in Theorem~\ref{five}; for each $12\le t\le50$ they equal $5\lceil t/2\rceil$.
+\end{lemma}
+\begin{proof}
+Generate every one of the $32^3$ triples, retaining exactly those passing the five tests. For each start state initialize one zero at that start and infinity elsewhere. Relax all arcs into a fresh vector at every step, recording the diagonal value. Save the vector at step 48 and compare every coordinate at step 50 with the saved value shifted by five. Appendix~B gives pseudocode and checksums in the form of counts. The reference program uses integer infinity $10^6$; any finite walk used here costs at most $50\cdot5=250$. An independently written implementation obtains the same diagonal minima and translated endpoint-vector identities.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{five}]
+Taking one further relaxation commutes with adding a finite constant to all finite entries. Hence $D_{t+2}=D_t+5$ for every $t\ge48$ by induction. Taking diagonal minima and applying the checked initial range gives the formula for both parities. No inference from periodicity of the diagonal data alone is required.
+\end{proof}
+\clearpage
+\appendix
+\section{Four binary witnesses for Section 2}
+Rows are written left to right, with a one for each marked vertex. The first pair on an extensible axis is repeated in its displayed order. The checker accepts the following boards for all multiplicities required by Lemma~\ref{local}.\par\medskip\noindent
+\begin{minipage}[t]{0.47\linewidth}
+\textbf{7 by 7, fixed.}
+\begin{verbatim}
+1011111
+0110101
+0111110
+1111101
+1101010
+0110011
+0001111
+\end{verbatim}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\linewidth}
+\textbf{7 by 9, fixed.}
+\begin{verbatim}
+001011111
+011100110
+101110101
+010111011
+111110001
+110110110
+011101101
+\end{verbatim}
+\end{minipage}\par\medskip
+\begin{minipage}[t]{0.47\linewidth}
+\textbf{7 by 11, extend columns.}
+\begin{verbatim}
+11010100001
+10111011010
+11110110111
+00000111000
+10101111110
+11100101000
+10101111110
+\end{verbatim}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\linewidth}
+\textbf{9 by 9, extend both axes.}
+\begin{verbatim}
+110111101
+100101110
+000111100
+111101101
+101011011
+011000100
+111011110
+110100111
+100101000
+\end{verbatim}
+\end{minipage}\par\medskip
+\paragraph{How the witnesses were found.} Each entry of a seed was one Boolean variable. All small boards required by Lemma~\ref{local} reused those variables at their corresponding indices. Each neighbourhood sum was encoded as a three-bit integer, enough to hold every value from zero to four. Positive sums and unequal adjacent sums were imposed at every coordinate. Z3 produced the assignments. Each displayed witness can subsequently be checked with ordinary integer arithmetic.
+
+\paragraph{A direct check of the forbidden size.} Enumerating all $2^{25}=33{,}554{,}432$ labelled boards gives $11{,}343{,}461$ boards on which every score is positive. Of these, $2{,}950$ also separate all horizontal edges. None separates every vertical edge as well. This check uses no transfer graph or symmetry reduction.
+
+\enlargethispage{1.3\baselineskip}
+\section{Algorithm, reproducibility and relation to earlier work}
+For every starting state $a$ use the following loop, initializing $f(t)$ globally to infinity.
+\begin{verbatim}
+d[:] = infinity; d[a] = 0
+for t from 1 to 50:
+    next[:] = infinity
+    for each arc u -> v:
+        next[v] = min(next[v], d[u] + weight(u))
+    d = next
+    f(t) = min(f(t), d[a])
+    if t == 48: saved = copy(d)
+compare d to saved + 5, coordinate by coordinate
+\end{verbatim}
+Processing one start at a time costs $O(L |V|(|V|+|E|))$ time and $O(L+|V|+|E|)$ storage for lengths through $L$. The program supplied here uses $L=50$. With exact arithmetic the same recurrence computes any finite prefix. The final comparison is what permits certification of an infinite tail.
+
+The second implementation encodes columns as tuples, generates predecessor states, charges the middle column of the target, and uses simultaneous shifts of the five row positions to reduce starting states to 862 representatives. The switch of charging convention gives the same weight on a closed walk. On a path from $a$ to $v$ it changes the cost by $w(v)-w(a)$, independently of length, so it also preserves the translated-power identity. Endpoints remain labelled. Independently of both transfer implementations, the original eight seed boards have been checked against explicit edge lists, including all wraparound edges. Complete integer outputs and invocation commands accompany the paper.
+
+Min-plus computations for domination-like invariants on circular strips have a clear precedent in Bouznif et al.\ \cite{minplus}; their three optimizing objectives concern identifying and locating codes. Our contribution is the classification, the states and verified identity for this specific invariant, and its resulting exact optimum. Efficient total domination \cite{efficient} requires a constant neighbourhood count. Lucky labelings \cite{lucky} distinguish neighbourhood sums. On a four-regular graph, labels $1+\mathbf1_S$ produce sums $4+s(v)$, so the distinguishing condition transfers, while proper total domination additionally requires positive $s(v)$ and optimizes $|S|$. These changes of objective matter when comparing earlier results.
+
+\paragraph{Scope.} The optimum is determined here specifically for width five. The cylinder in Section~2 of \cite{princes} has different boundary conditions. For historical priority, the public record for the dissertation \cite{thesis} was located; its complete text could not be inspected in this review. The evidence package records the retrieval scope and the role of AI in generating the analysis and code.
+
+\begin{thebibliography}{9}\small
+\bibitem{intro} R. Chatterjee, E. Jent, S. Osborn and P. Zhang. Proper total domination in graphs. \emph{Electronic Journal of Mathematics} 7 (2024), 58--68. DOI 10.47443/ejm.2024.024.
+\bibitem{princes} S. Osborn and P. Zhang. From princes on chessboards to proper total domination in graphs. \emph{Journal of Combinatorial Mathematics and Combinatorial Computing} 129 (2026), 33--48. DOI 10.61091/jcmcc129-03.
+\bibitem{fans} S. Osborn and P. Zhang. Proper total domination in generalized fans and wheels. \emph{Symmetry} 18 (2026), 1092. DOI 10.3390/sym18071092.
+\bibitem{minplus} M. Bouznif, J. Darlay, J. Moncel and M. Preissmann. Exact values for three domination-like problems in circular and infinite grid graphs of small height. \emph{Discrete Mathematics and Theoretical Computer Science} 21(3) (2019), article 12. DOI 10.23638/DMTCS-21-3-12.
+\bibitem{efficient} M. Wehrmann and A. M. C. A. Koster. Efficient total domination and related invariants in torus graphs. \emph{Discrete Applied Mathematics} 389 (2026), 106--118. DOI 10.1016/j.dam.2026.03.047.
+\bibitem{lucky} S. Czerwi\'nski, J. Grytczuk and W. \.Zelazny. Lucky labelings of graphs. \emph{Information Processing Letters} 109 (2009), 1078--1081. DOI 10.1016/j.ipl.2009.05.011.
+\bibitem{thesis} S. I. Osborn. \emph{From Total Domination to Graph Coloring}. PhD dissertation, Western Michigan University, 2026. \url{https://scholarworks.wmich.edu/dissertations/4275/}.
+\end{thebibliography}
+\end{document}

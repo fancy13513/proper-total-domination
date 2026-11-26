@@ -1,0 +1,3 @@
+Positive certificates checked: 20
+Valid 5-column row triples: 4310
+Counts after successive vertical checks: 10800 25170 1940 0

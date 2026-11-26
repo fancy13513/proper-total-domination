@@ -1,0 +1,3 @@
+Graph-based expansion certificates: 20
+Tuple states 4310, arcs 10800, representative starts 862
+Target-weight recurrence and all announced values through n=50: OK
